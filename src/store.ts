@@ -1,24 +1,23 @@
 import { create } from "zustand";
+import { CartItem } from "./types/CartItem";
+import { Product } from "./types/Product";
 
-type CounterStore = {
-  count: number;
-  imcrement: () => void;
-  decrement: () => void;
-  reset: () => void;
+type CartStore = {
+  cart: CartItem[];
+  addToCart: (product: CartItem) => void;
+  clearCart: () => void;
+  removeCartItem: (productId: Product["id"]) => void;
 };
 
-export const useCounterStore = create<CounterStore>((set) => ({
-  count: 0,
-  imcrement: () =>
+export const useCartStore = create<CartStore>((set) => ({
+  cart: [],
+  addToCart: (product) =>
     set((state) => ({
-      count: state.count + 1,
+      cart: [product, ...state.cart],
     })),
-  decrement: () =>
+  clearCart: () => set(() => ({ cart: [] })),
+  removeCartItem: (productId) =>
     set((state) => ({
-      count: state.count - 1,
-    })),
-  reset: () =>
-    set((state) => ({
-      count: (state.count = 0),
+      cart: state.cart.filter((product) => product.id !== productId),
     })),
 }));
